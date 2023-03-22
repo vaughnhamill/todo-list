@@ -1,0 +1,28 @@
+{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% include "header.html" %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ task.item }}</h1>
+    <h4><a class="btn btn-success btn-md" href="{{ url_for('home') }}">Home</a></h4>
+
+    {{ form.csrf_token }}
+    {{ wtf.quick_form(form, novalidate=True, button_map={"update": "success"}) }}
+
+    <br>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <h4 class="flash">{{ message }}</h4>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+</div>
+
+{% endblock %}

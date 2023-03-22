@@ -1,0 +1,69 @@
+{% extends 'bootstrap/base.html' %}
+{% include "header.html" %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block title %}TODO List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Todo List</h1>
+  <a class="btn btn-success btn-md" href="{{ url_for('add_task') }}" role="button">New Task</a>
+
+  {% if not tasks %}
+    <br>
+    <br>
+    <p>Your list is empty! Add a new task to get started.</p>
+
+  {% else %}
+    <table>
+      <tr>
+        <th></th>
+        <th> Task </th>
+        <th> Due Date </th>
+        <th> Priority </th>
+        <th> Note </th>
+        <th> Tag Color </th>
+        <th> Delete Task </th>
+      </tr>
+
+      {% for task in tasks %}
+        {% if task.complete == 0 %}
+          <tr class="table-data">
+            <td class="table-data">
+              <form action="{{ url_for('complete_task', task_id=task.id) }}">
+                <input type="submit" class="btn btn-success" value="Complete">
+              </form>
+            </td>
+            <td class="table-data"><a href="{{ url_for('task_info', task_id=task.id) }}">{{ task.item }}</a></td>
+            <td class="table-data">{{ task.due_date }}</td>
+            <td class="table-data">{{ task.priority }}</td>
+            <td class="table-data">{{ task.note }}</td>
+            <td class="table-data"><span  class="tag-color" style="background-color:{{task.tag_color}}"></span></td>
+            <td class="table-data"><a href="{{ url_for('delete_task', task_id=task.id) }}">Delete</a></td>
+          </tr>
+        {% else %}
+          <tr class="table-data">
+            <td class="table-data">
+              <form action="{{ url_for('undo_complete', task_id=task.id) }}">
+                <input type="submit" class="btn btn-outlined-success" value="Undo">
+              </form>
+            </td>
+            <td class="table-data strikeout">{{ task.item }}</td>
+            <td class="table-data strikeout">{{ task.due_date }}</td>
+            <td class="table-data strikeout">{{ task.priority }}</td>
+            <td class="table-data strikeout">{{ task.note }}</td>
+            <td class="table-data strikeout"><span  class="tag-color" style="background-color:{{task.tag_color}}; opacity:0.25"></span></td>
+            <td class="table-data"><a href="{{ url_for('delete_task', task_id=task.id) }}">Delete</a></td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+
+    </table>
+
+  {% endif %}
+</div>
+
+{% endblock %}
